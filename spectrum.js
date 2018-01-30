@@ -617,7 +617,6 @@
                 reflow();
                 return;
             }
-
             boundElement.trigger(event, [ get() ]);
 
             if (callbacks.beforeShow(get()) === false || event.isDefaultPrevented()) {
@@ -661,7 +660,10 @@
             if (clickoutFiresChange) {
                 updateOriginalInput(true);
             }
-            else {
+            else if (!callbacks || !callbacks.change || callbacks.change === noop) {
+                // If change notifications have been published while the colour has been changing,
+                // don't revert back to the original value, since it makes the internal state
+                // inconsistent with what we have just been publishing.
                 revert();
             }
             hide();
